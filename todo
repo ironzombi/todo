@@ -1,0 +1,87 @@
+#!/usr/bin/env ruby
+
+require_relative 'etc/tbackend'
+require 'date'
+require_relative 'etc/duedate'
+
+
+task = TaskDatabase.new("Tasks")
+
+
+def set_date
+
+  puts "Date Options: "
+  puts "Enter\n1 for due now"
+  puts "2 for due in the hour"
+  puts "3 for due in a week"
+  puts "4 for due in a month"
+  puts "5 for due in a year"
+  print ": "
+  ans = gets.chomp.to_i
+
+  case ans
+  when 1
+    Time.now.+$MIN
+  when 2
+    Time.now+$HOUR
+  when 3
+    Time.now+$WEEK
+  when 4
+    Time.now+$MONTH
+  when 5
+    Time.now+$YEAR
+  else
+    return Time.now+$DAY
+  end
+
+end
+
+
+def main_menu(task)
+
+  puts "TaskListForPower".colorize(:red)
+ 
+  loop do
+
+    puts "a| Add Task".colorize(:yellow)
+    puts "l| List Tasks".colorize(:green)
+    puts "s| Search Task".colorize(:pink)
+    puts "c| Clear Screen".colorize(:white)
+    puts "q| Quit".colorize(:red)
+    ans = gets.chomp
+
+    case ans
+    when "a"
+      puts "Name: ".colorize(:yellow)
+      name = gets.chomp
+      puts "Description: ".colorize(:yellow)
+      desc = gets.chomp
+      puts "Due date: ".colorize(:yellow)
+      date = set_date
+      task.add_task(name,desc,date)
+      system('clear')
+    when "l"
+      system('clear')
+      task.list_tasks
+    when "s"
+      system('clear')
+      puts "Enter Task-ID: ".colorize(:yellow)
+      id = gets.chomp.to_i
+      task.get_task(id)
+    when "c"
+      system('clear')
+    when "q"
+      task.close_db
+      exit
+    else
+      puts "ERROR_ERROR".colorize(:green)
+    end
+    
+  end
+
+end
+#start the app#
+###############
+system('clear')
+main_menu(task)
+
